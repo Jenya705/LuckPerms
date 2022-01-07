@@ -31,7 +31,7 @@ import me.lucko.luckperms.common.locale.TranslationManager;
 import me.lucko.luckperms.common.model.User;
 import me.lucko.luckperms.common.plugin.util.AbstractConnectionListener;
 import me.lucko.luckperms.minestom.LPMinestomPlugin;
-import me.lucko.luckperms.minestom.options.PlayerQueryMap;
+import me.lucko.luckperms.minestom.inject.LPMinestomPlayer;
 import net.kyori.adventure.text.Component;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
@@ -86,7 +86,9 @@ public class MinestomConnectionListener extends AbstractConnectionListener {
             player.kick(kickMsg);
         }
 
-        PlayerQueryMap.initializePermissions(player, user);
+        if (player instanceof LPMinestomPlayer localPlayer) {
+            localPlayer.setUser(user);
+        }
         this.plugin.getContextManager().signalContextUpdate(player);
     }
 

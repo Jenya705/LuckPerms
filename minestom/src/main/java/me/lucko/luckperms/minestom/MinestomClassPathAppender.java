@@ -27,13 +27,22 @@ package me.lucko.luckperms.minestom;
 
 import java.nio.file.Path;
 import me.lucko.luckperms.common.plugin.classpath.ClassPathAppender;
-import net.minestom.server.extras.selfmodification.MinestomRootClassLoader;
+import net.minestom.server.extensions.Extension;
+import net.minestom.server.extensions.ExtensionClassLoader;
 
 public class MinestomClassPathAppender implements ClassPathAppender {
-    private final MinestomRootClassLoader classLoader = MinestomRootClassLoader.getInstance();
+
+    private final Extension extension;
+
+    private ExtensionClassLoader classLoader;
+
+    public MinestomClassPathAppender(Extension extension) {
+        this.extension = extension;
+    }
 
     @Override
     public void addJarToClasspath(Path file) {
+        if (classLoader == null) classLoader = extension.getOrigin().getClassLoader();
         try {
             classLoader.addURL(file.toUri().toURL());
         } catch (Exception exception) {

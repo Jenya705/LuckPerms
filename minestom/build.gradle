@@ -1,5 +1,11 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '4.0.2'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+shadowJar {
+    if (project.hasProperty("dir")) {
+        destinationDir(new File((String) project.getProperties().get("dir")))
+    }
 }
 
 repositories {
@@ -15,7 +21,7 @@ repositories {
 dependencies {
     implementation project(':common')
 
-    compileOnly 'com.github.minestom:Minestom:0f4698bed7'
+    compileOnly 'com.github.Minestom:Minestom:9041250ce8'
 }
 
 processResources {
@@ -24,10 +30,8 @@ processResources {
     }
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 shadowJar {
     archiveName = "LuckPerms-Minestom-${project.ext.fullVersion}.jar"
@@ -40,7 +44,7 @@ shadowJar {
         exclude '/mappings/*'
     }
 
-    relocate 'net.kyori.adventure', 'me.lucko.luckperms.lib.adventure'
+    //relocate 'net.kyori.adventure', 'me.lucko.luckperms.lib.adventure'
     relocate 'net.kyori.event', 'me.lucko.luckperms.lib.eventbus'
     relocate 'com.github.benmanes.caffeine', 'me.lucko.luckperms.lib.caffeine'
     relocate 'okio', 'me.lucko.luckperms.lib.okio'

@@ -70,7 +70,7 @@ public class MinestomSenderFactory extends SenderFactory<LPMinestomPlugin, Comma
             locale = Locale.forLanguageTag(((Player) sender).getSettings().getLocale());
         }
         Component rendered = TranslationManager.render(message, locale);
-        sender.sendMessage(PlainTextComponentSerializer.plainText().serialize(rendered));
+        sender.sendMessage(rendered);
     }
 
     @Override

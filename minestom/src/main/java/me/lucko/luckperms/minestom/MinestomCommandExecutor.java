@@ -28,6 +28,7 @@ package me.lucko.luckperms.minestom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import me.lucko.luckperms.common.command.CommandManager;
 import me.lucko.luckperms.common.command.utils.ArgumentTokenizer;
@@ -71,7 +72,7 @@ public class MinestomCommandExecutor extends CommandManager {
 
             params.setSuggestionCallback((sender, context, suggestion) -> {
                 Sender wrapped = this.commandExecutor.plugin.getSenderFactory().wrap(sender);
-                List<String> arguments = ArgumentTokenizer.TAB_COMPLETE.tokenizeInput(context.get(params));
+                List<String> arguments = ArgumentTokenizer.TAB_COMPLETE.tokenizeInput(Objects.requireNonNullElse(context.get(params), new String[0]));
                 tabCompleteCommand(wrapped, arguments).stream().map(SuggestionEntry::new).forEach(suggestion::addEntry);
             });
 
@@ -85,7 +86,7 @@ public class MinestomCommandExecutor extends CommandManager {
         }
 
         public void process(@NotNull CommandSender sender, @NotNull String command, @NotNull String[] args) {
-            this.commandExecutor.executeCommand(this.commandExecutor.plugin.getSenderFactory().wrap(sender), command, Arrays.asList(args));
+            this.commandExecutor.executeCommand(this.commandExecutor.plugin.getSenderFactory().wrap(sender), command, new ArrayList<>(Arrays.asList(args)));
         }
 
 

@@ -32,10 +32,12 @@ import me.lucko.luckperms.common.plugin.classpath.ClassPathAppender;
 import me.lucko.luckperms.common.plugin.logging.PluginLogger;
 import me.lucko.luckperms.common.plugin.logging.Slf4jPluginLogger;
 import me.lucko.luckperms.common.plugin.scheduler.SchedulerAdapter;
+import me.lucko.luckperms.minestom.inject.LPMinestomPlayerProvider;
 import net.luckperms.api.platform.Platform;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.entity.Player;
 import net.minestom.server.extensions.Extension;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
@@ -62,18 +64,21 @@ public class LPMinestomBootstrap extends Extension implements LuckPermsBootstrap
     private final MinestomSchedulerAdapter schedulerAdapter;
     private final MinestomClassPathAppender classPathAppender;
 
+    private final LPMinestomPlayerProvider playerProvider;
+
     private Instant startupTime;
 
     public LPMinestomBootstrap() {
         this.plugin = new LPMinestomPlugin(this);
         this.schedulerAdapter = new MinestomSchedulerAdapter();
-        this.classPathAppender = new MinestomClassPathAppender();
+        this.classPathAppender = new MinestomClassPathAppender(this);
+        this.playerProvider = new LPMinestomPlayerProvider(this.plugin);
     }
 
     @Override
     public void preInitialize() {
         this.startupTime = Instant.now();
-
+        MinecraftServer.getConnectionManager().setPlayerProvider(this.playerProvider);
         try {
             this.plugin.load();
             this.plugin.getDependencyManager().loadDependencies(
@@ -141,8 +146,7 @@ public class LPMinestomBootstrap extends Extension implements LuckPermsBootstrap
     }
 
     @Override
-    public Path getDataDirectory() {
-        // TODO This is a VERY hacky solution which I will fix
+    public @NotNull Path getDataDirectory() {
         return new File("./luckperms").toPath();
     }
 
